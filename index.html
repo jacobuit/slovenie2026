@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Slovenië Roadtrip – Definitieve Reisplanner</title>
+
+  <style>
+    :root{
+      --bg:#f4f7fb;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --accent:#1d4ed8;
+      --accent2:#0f766e;
+      --line:#dbe4ee;
+      --shadow:0 10px 30px rgba(0,0,0,.08);
+      --radius:18px;
+      --max:1100px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.55;
+    }
+
+    a{color:var(--accent); text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    .hero{
+      min-height:420px;
+      color:#fff;
+      background:
+        linear-gradient(rgba(10,20,40,.35), rgba(10,20,40,.58)),
+        url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Panorama_view_of_Lake_Bled_%283825979136%29.jpg/1280px-Panorama_view_of_Lake_Bled_%283825979136%29.jpg') center/cover no-repeat,
+        linear-gradient(135deg,#1d4ed8,#0f766e);
+      display:flex;
+      align-items:flex-end;
+    }
+
+    .hero-inner{
+      max-width:var(--max);
+      margin:0 auto;
+      width:100%;
+      padding:42px 20px 36px;
+    }
+
+    .eyebrow{
+      display:inline-block;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.16);
+      border:1px solid rgba(255,255,255,.25);
+      font-size:14px;
+      margin-bottom:14px;
+      backdrop-filter:blur(6px);
+    }
+
+    .hero h1{
+      margin:0 0 10px;
+      font-size:42px;
+      line-height:1.1;
+    }
+
+    .hero p{
+      margin:0;
+      max-width:860px;
+      font-size:18px;
+      color:rgba(255,255,255,.95);
+    }
+
+    .wrap{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:24px 20px 60px;
+    }
+
+    .nav{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:-22px;
+      position:relative;
+      z-index:5;
+    }
+
+    .pill{
+      background:#fff;
+      color:var(--text);
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:10px 14px;
+      box-shadow:var(--shadow);
+      font-size:14px;
+    }
+
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:22px;
+      margin-top:20px;
+    }
+
+    .card h2{
+      margin:0 0 10px;
+      font-size:28px;
+      color:#123a7a;
+    }
+
+    .card h3{
+      margin:18px 0 8px;
+      font-size:20px;
+      color:#0f766e;
+    }
+
+    .muted{color:var(--muted)}
+
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:14px;
+      margin-top:14px;
+    }
+
+    .stat{
+      background:#f8fbff;
+      border:1px solid #e3edf8;
+      border-radius:14px;
+      padding:14px;
+    }
+
+    .stat .label{
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+
+    .stat .value{
+      font-size:18px;
+      font-weight:700;
+    }
+
+    .route{
+      margin-top:18px;
+      display:grid;
+      gap:12px;
+    }
+
+    .route-stop{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      background:#fcfdff;
+    }
+
+    .route-stop strong{
+      display:block;
+      margin-bottom:4px;
+      font-size:18px;
+      color:#123a7a;
+    }
+
+    .buttons{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .btn{
+      display:inline-block;
+      background:var(--accent);
+      color:#fff;
+      padding:10px 14px;
+      border-radius:10px;
+      font-weight:700;
+      border:none;
+      cursor:pointer;
+    }
+
+    .btn:hover{
+      text-decoration:none;
+      opacity:.95;
+    }
+
+    .btn.secondary{background:var(--accent2)}
+    .btn.light{
+      background:#eef4ff;
+      color:#123a7a;
+      border:1px solid #d8e4fb;
+    }
+
+    .photo{
+      width:100%;
+      max-height:380px;
+      object-fit:cover;
+      border-radius:14px;
+      display:block;
+      background:#e5e7eb;
+      margin-top:14px;
+    }
+
+    .day{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:18px;
+      background:#fcfdff;
+      margin-top:16px;
+    }
+
+    .day-header{
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+
+    .day-title{
+      font-size:22px;
+      font-weight:700;
+      color:#123a7a;
+    }
+
+    .tag{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#eef6ff;
+      color:#123a7a;
+      font-size:13px;
+      font-weight:700;
+      border:1px solid #d8e7ff;
+    }
+
+    ul.info{
+      margin:10px 0 0;
+      padding-left:20px;
+    }
+
+    ul.info li{
+      margin-bottom:8px;
+    }
+
+    .two-col{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:18px;
+    }
+
+    .mini{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .mini-box{
+      background:#f8fafc;
+      border:1px solid #e5edf6;
+      border-radius:12px;
+      padding:12px;
+    }
+
+    .mini-box strong{
+      display:block;
+      margin-bottom:5px;
+      color:#0f766e;
+    }
+
+    details{
+      margin-top:12px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px 14px;
+      background:#fff;
+    }
+
+    summary{
+      cursor:pointer;
+      font-weight:700;
+      color:#123a7a;
+    }
+
+    .footer-note{
+      text-align:center;
+      color:var(--muted);
+      margin-top:28px;
+      font-size:14px;
+    }
+
+    @media (max-width:860px){
+      .hero h1{font-size:34px}
+      .two-col{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="eyebrow">Slovenië roadtrip • 17 t/m 27 augustus</div>
+      <h1>Jaco, Jessica en Niels in Slovenië</h1>
+      <p>Een comfortabele roadtrip via Venetië, met Soča Valley, Bohinj, Bled en als ontspannen afsluiter Terme Čatež.</p>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="nav">
+      <a class="pill" href="#overzicht">Overzicht</a>
+      <a class="pill" href="#voorbereiding">Voorbereiding</a>
+      <a class="pill" href="#dag1">Dag 1</a>
+      <a class="pill" href="#dag2">Dag 2</a>
+      <a class="pill" href="#dag3">Dag 3</a>
+      <a class="pill" href="#dag4">Dag 4</a>
+      <a class="pill" href="#dag5">Dag 5</a>
+      <a class="pill" href="#dag6">Dag 6</a>
+      <a class="pill" href="#dag7">Dag 7</a>
+      <a class="pill" href="#dag8">Dag 8</a>
+      <a class="pill" href="#dag9">Dag 9</a>
+      <a class="pill" href="#dag10">Dag 10</a>
+      <a class="pill" href="#dag11">Dag 11</a>
+    </div>
+
+    <section class="card" id="overzicht">
+      <h2>Reisoverzicht</h2>
+      <p class="muted">Alles staat samengevoegd in één overzichtelijke pagina: voorbereiding, vlucht, verblijf, highlights, dagplanning, routes, restaurants en extra tips.</p>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="label">Vluchten</div>
+          <div class="value">KLM KL1629 / KL1634</div>
+        </div>
+        <div class="stat">
+          <div class="label">Auto</div>
+          <div class="value">Sixt – Skoda Scala of vergelijkbaar</div>
+        </div>
+        <div class="stat">
+          <div class="label">Accommodaties</div>
+          <div class="value">Kobarid • Bohinj • Čatež</div>
+        </div>
+        <div class="stat">
+          <div class="label">Duur</div>
+          <div class="value">10 nachten / 11 dagen</div>
+        </div>
+      </div>
+
+      <div class="route">
+        <div class="route-stop">
+          <strong>17 aug — Amsterdam → Venetië → Kobarid</strong>
+          Vliegdag, auto ophalen en door naar Slovenië.
+        </div>
+        <div class="route-stop">
+          <strong>17–21 aug — Kobarid</strong>
+          Soča Valley, Kozjak, Tolmin Gorge en Postojna Cave.
+        </div>
+        <div class="route-stop">
+          <strong>21–24 aug — Bohinjska Bistrica</strong>
+          Vršič Pass, Lake Jasna, Bohinj, Bled en Vintgar Gorge.
+        </div>
+        <div class="route-stop">
+          <strong>24–27 aug — Terme Čatež</strong>
+          Waterpark en ontspannen afronden.
+        </div>
+        <div class="route-stop">
+          <strong>27 aug — Čatež → Venetië → Amsterdam</strong>
+          Auto inleveren en terugvlucht KL1634.
+        </div>
+      </div>
+
+      <div class="buttons">
+        <a class="btn" target="_blank" href="https://www.google.com/maps/dir/Venice+Marco+Polo+Airport/Idrsko+53d,+5222+Kobarid,+Slovenia/Letovi%C5%A1ka+ulica+6,+4264+Bohinjska+Bistrica,+Slovenia/Topli%C5%A1ka+cesta+35a,+8250+Bre%C5%BEice,+Slovenia/Venice+Marco+Polo+Airport">
+          Open hoofdroute
+        </a>
+      </div>
+    </section>
+
+    <section class="card" id="voorbereiding">
+      <h2>Voorbereiding voor vertrek</h2>
+      <div class="two-col">
+        <div>
+          <h3>Praktische checks</h3>
+          <ul class="info">
+            <li>Online inchecken bij KLM en bagage controleren.</li>
+            <li>Sixt reservering checken: internationale dekking + 0 euro eigen risico staan aan.</li>
+            <li>Na ophalen auto het Sloveense e-vignet kopen (kenteken-gebonden).</li>
+            <li>Postojna Cave tickets vooraf reserveren.</li>
+            <li>Offline kaarten downloaden in Google Maps.</li>
+            <li>Waterschoenen meenemen voor rivier- en meerplekken.</li>
+            <li>Een vest of trui meenemen voor de grot.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Vertrekdag in één oogopslag</h3>
+          <div class="mini">
+            <div class="mini-box">
+              <strong>05:20–05:30</strong>
+              Vertrek van huis
+            </div>
+            <div class="mini-box">
+              <strong>06:40</strong>
+              Aankomst Schiphol P3
+            </div>
+            <div class="mini-box">
+              <strong>09:10</strong>
+              KLM KL1629 vertrekt
+            </div>
+            <div class="mini-box">
+              <strong>10:55</strong>
+              Landing Venetië
+            </div>
+            <div class="mini-box">
+              <strong>11:30</strong>
+              Auto ophalen
+            </div>
+            <div class="mini-box">
+              <strong>15:30–16:00</strong>
+              Aankomst Kobarid
+            </div>
+          </div>
+
+          <div class="buttons">
+            <a class="btn secondary" target="_blank" href="https://evinjeta.dars.si/en">Koop e-vignet</a>
+            <a class="btn light" target="_blank" href="https://www.google.com/maps/dir/Spijkenisse/Schiphol+P3+Lang+Parkeren">Route naar Schiphol P3</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="dag1">
+      <h2>Kobarid & Soča Valley</h2>
+      <img class="photo" alt="Soca Valley" src="https://commons.wikimedia.org/wiki/Special:FilePath/So%C4%8Da%20valley,%20Slovenia%20(5366972691).jpg?width=1280">
+
+      <div class="day">
+        <div class="day-header">
+          <div class="day-title">Dag 1 — Maandag 17 augustus</div>
+          <div class="tag">Reisdag</div>
+        </div>
+        <ul class="info">
+          <li><strong>05:20–05:30</strong> vertrek van huis richting Schiphol.</li>
+          <li><strong>06:40</strong> aankomst P3 parking Schiphol.</li>
+          <li><strong>09:10</strong> vertrek met KLM vlucht <strong>KL1629</strong> van Amsterdam naar Venetië.</li>
+          <li><strong>10:55</strong> aankomst op Venice Marco Polo Airport.</li>
+          <li><strong>11:30</strong> auto ophalen bij Sixt.</li>
+          <li><strong>12:00–12:15</strong> vertrek richting Kobarid.</li>
+          <li>Onderweg eventueel een supermarktstop voor water, ontbijt en snacks.</li>
+          <li><strong>15:30–16:00</strong> aankomst bij accommodatie.</li>
+        </ul>
+
+        <h3>Accommodatie</h3>
+        <p><strong>Apartma ALPINA</strong><br>
+        Idrsko 53d, 5222 Kobarid, Slovenië</p>
+
+        <div class="buttons">
+          <a class="btn" target="_blank" href="https://www.google.com/maps/dir/Venice+Marco+Polo+Airport/Idrsko+53d,+5222+Kobarid,+Slovenia">
+            Route naar accommodatie
+          </a>
+        </div>
+      </div>
+
+      <div class="day" id="dag2">
+        <div class="day-header">
+          <div class="day-title">Dag 2 — Dinsdag 18 augustus</div>
+          <div class="tag">Soča Valley</div>
+        </div>
+
+        <p>Dit is een ideale eerste volle dag: weinig reistijd, meteen veel natuurschoon en genoeg vrijheid om rustig in het vakantieritme te komen. Jullie pakken direct een top-highlight mee, maar houden ook ruimte om te zwemmen of gewoon relaxed aan het water te zitten.</p>
+
+        <ul class="info">
+          <li><strong>09:30</strong> rustig opstarten en ontbijten.</li>
+          <li><strong>10:30</strong> vertrek richting Kozjak waterval.</li>
+          <li><strong>13:00</strong> lunch in Kobarid of omgeving.</li>
+          <li><strong>15:00</strong> zwemmen of pootjebaden, bij voorkeur Nadiža als jullie rustiger en warmer water willen.</li>
+          <li><strong>18:30</strong> diner in Kobarid.</li>
+        </ul>
+
+        <img class="photo" alt="Soca Valley uitzicht" src="https://commons.wikimedia.org/wiki/Special:FilePath/Street%20over%20Limarica%20River,%20So%C4%8Da%20Valley,%20Slovenia.jpg?width=1280">
+
+        <div class="buttons">
+          <a class="btn" target="_blank" href="https://www.google.com/maps/dir/Idrsko+53d,+5222+Kobarid,+Slovenia/Kozjak+Waterfall">
+            Route naar Kozjak waterval
+          </a>
+        </div>
+
+        <details>
+          <summary>Restauranttips rond Kobarid</summary>
+          <div class="mini">
+            <div class="mini-box">
+              <strong>Hiša Polonka</strong>
+              Leuke keuze als je een sfeervolle en bekendere plek wilt voor lunch of diner.
+            </div>
+            <div class="mini-box">
+              <strong>Gostišče Jazbec</strong>
+              Prima optie als jullie iets laagdrempeligs zoeken zonder al te veel gedoe.
+            </div>
+            <div class="mini-box">
+              <strong>Kobarid centrum</strong>
+              Ook slim: gewoon in het centrum kijken waar het gezellig zit en het terras je aanspreekt.
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div class="day" id="dag3">
+        <div class="day-header">
+          <div class="day-title">Dag 3 — Woensdag 19 augustus</div>
+          <div class="tag">Tolmin Gorge</div>
+        </div>
+        <ul class="info">
+          <li><strong>09:30</strong> vertrek richting Tolmin Gorge.</li>
+          <li><strong>10:15–12:30</strong> bezoek aan de kloof.</li>
+          <li><strong>13:00</strong> lunch in Tolmin.</li>
+          <li><strong>15:00</strong> rustige middag terug in Kobarid of nog even aan de rivier.</li>
+        </ul>
+
+        <img class="photo" alt="Tolmin Gorge" src="https://commons.wikimedia.org/wiki/Special:FilePath/Tolmin%20Gorges%20in%20Slovenia.jpg?width=1280">
+
+        <div class="buttons">
+          <a class="btn" target="_blank" href="https://www.google.com/maps/dir/Idrsko+53d,+5222+Kobarid,+Slovenia/Tolmin+Gorge">
+            Route naar Tolmin Gorge
+          </a>
+        </div>
+      </div>
+
+      <div class="day" id="dag4">
+        <div class="day-header">
+          <div class="day-title">Dag 4 — Donderdag 20 augustus</div>
+          <div class="tag">Postojna Cave + Predjama</div>
+        </div>
+        <ul class="info">
+          <li><strong>08:45–09:00</strong> vertrek vanuit Kobarid.</li>
+          <li><strong>10:30–10:45</strong> aankomst bij Postojna Cave.</li>
+          <li><strong>11:00</strong> mooi tijdslot voor het grottenbezoek.</li>
+          <li><strong>13:00</strong> lunch in de buurt.</li>
+          <li><strong>14:15</strong> bezoek Predjama Castle.</li>
+          <li><strong>16:00</strong> terug richting Kobarid.</li>
+          <li><strong>17:30–18:00</strong> verwachte aankomst terug.</li>
+        </ul>
+
+        <h3>Bezoekadres</h3>
+        <p><strong>Postojna Cave</strong><br>
+        Jamska cesta 30, 6230 Postojna, Slovenië</p>
+
+        <img class="photo" alt="Postojna Cave" src="https://commons.wikimedia.org/wiki/Special:FilePath/Postojna%20Cave%20-%20Slovenia.jpg?width=1280">
+
+        <div class="buttons">
+          <a class="btn" target="_blank" href="https://www.google.com/maps/dir/Idrsko+53d,+5222+Kobarid,+Slovenia/Postojna+Cave,+Jamska+cesta+30,+6230+Postojna,+Slovenia">
+            Route naar Postojna Cave
+          </a>
+          <a class="btn light" target="_blank" href="https://www.google.com/maps/dir/Postojna+Cave/Predjama+Castle">
+            Postojna naar Predjama
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="dag5">
+      <h2>Bohinj, Bled en de Vršič Pass</h2>
+
+      <div class="day">
+        <div class="day-header">
+          <div class="day-title">Dag 5 — Vrijdag 21 augustus</div>
+          <div class="tag">Scenic verhuisdag</div>
+        </div>
+
+        <ul class="info">
+          <li><strong>08:30–09:00</strong> rustig inpakken en uitchecken bij Kobarid.</li>
+          <li><strong>09:30</strong> vertrek richting Bovec.</li>
+          <li><strong>10:15</strong> korte stop in of rond Bovec.</li>
+          <li>Daarna de <strong>Vršič Pass</strong> op.</li>
+          <li><strong>11:45–12:30</strong> stop bij <strong>Jezero Jasna, Kranjska Gora</strong>.</li>
+          <li><strong>13:30–14:00</strong> aankomst Bohinjska Bistrica en inchecken vanaf 14:00.</li>
+          <li><strong>16:00</strong> eventueel eerste rustige stop bij Lake Bohinj.</li>
+        </ul>
+
+        <p><strong>Appartement Bohinjska Bistrica</strong><br>
+        Letoviška ulica 6, Bohinjska Bistrica, 4264 Slovenië</p>
+
+        <img class="photo" alt="Vrsic Pass" src="https://commons.wikimedia.org/wiki/Special:FilePath/Road%20to%20Vr%C5%A1i%C4%8D%20pass.jpg?width=1280">
+
+        <div class="buttons">
+          <a class="btn" target="_blank" href="https://www.google.com/maps/dir/Idrsko+53d,+5222+Kobarid,+Slovenia/Vr%C5%A1i%C4%8D+Pass/Jezero+Jasna,+4280+Kranjska+Gora,+Slovenia/Letovi%C5%A1ka+ulica+6,+4264+Bohinjska+Bistrica,+Slovenia">
+            Open route via Vršič Pass
+          </a>
+          <a class="btn light" target="_blank" href="https://www.google.com/maps/place/Jezero+Jasna,+4280+Kranjska+Gora,+Slovenia/">
+            Jezero Jasna
+          </a>
+        </div>
+      </div>
+
+      <div class="day" id="dag6">
+        <div class="day-header">
+          <div class="day-title">Dag 6 — Zaterdag 22 augustus</div>
+          <div class="tag">Lake Bohinj</div>
+        </div>
+
+        <ul class="info">
+          <li><strong>09:30</strong> rustig ontbijt en vertrek richting Lake Bohinj.</li>
+          <li><strong>10:00–13:00</strong> zwemmen, wandelen of ontspannen aan het meer.</li>
+          <li><strong>13:30</strong> lunch in de omgeving van Ribčev Laz of Bohinj.</li>
+          <li><strong>15:30</strong> optioneel Vogel-kabelbaan of gewoon een relaxte middag bij het water.</li>
+          <li><strong>18:30</strong> diner terug in Bohinjska Bistrica.</li>
+        </ul>
+
+        <img class="photo" alt="Lake Bohinj" src="https://commons.wikimedia.org/wiki/Special:FilePath/Lake%20Bohinj.jpg?width=1280">
+
+        <div class="buttons">
+          <a class="btn" target="_blank" href="https://www.google.com/maps/dir/Letovi%C5%A1ka+ulica+6,+4264+Bohinjska+Bistrica,+Slovenia/Lake+Bohinj">
+            Route naar Lake Bohinj
+          </a>
+          <a class="btn light" target="_blank" href="https://www.bohinj.si/en/cable-car-to-vogel-viewpoint/">
+            Vogel-kabelbaan
+          </a>
+        </div>
+
+        <details>
+          <summary>Restauranttips rond Bohinj</summary>
+          <div class="mini">
+            <div class="mini-box">
+              <strong>Restaurant Bohinj Sunrose 7</strong>
+              Mooie optie voor een wat specialer diner in Bohinjska Bistrica.
+            </div>
+            <div class="mini-box">
+              <strong>Štrud’l</strong>
+              Goede keuze als jullie lokale sfeer en Bohinj-gerechten leuk vinden.
+            </div>
+            <div class="mini-box">
+              <strong>Foksner</strong>
+              Handig en populair voor een casual lunch of diner rond Ribčev Laz.
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div class="day" id="dag7">
+        <div class="day-header">
+          <div class="day-title">Dag 7 — Zondag 23 augustus</div>
+          <div class="tag">Bled + Vintgar Gorge</div>
+        </div>
+
+        <ul class="info">
+          <li><strong>09:00</strong> vertrek richting Vintgar Gorge.</li>
+          <li><strong>09:45–11:30</strong> bezoek kloof.</li>
+          <li><strong>12:00</strong> door naar Bled.</li>
+          <li><strong>12:30–14:00</strong> lunch en rondje langs het meer.</li>
+          <li><strong>14:00–16:00</strong> vrije invulling: bootje, uitzichtpunt, ijsje of even zwemmen.</li>
+          <li><strong>17:00</strong> terug richting Bohinjska Bistrica.</li>
+        </ul>
+
+        <img class="photo" alt="Lake Bled" src="https://commons.wikimedia.org/wiki/Special:FilePath/Lake%20bled%202021.jpg?width=1280">
+
+        <div class="buttons">
+          <a class="btn" target="_blank" href="https://www.google.com/maps/dir/Letovi%C5%A1ka+ulica+6,+4264+Bohinjska+Bistrica,+Slovenia/Vintgar+Gorge/Lake+Bled">
+            Open route Vintgar + Bled
+          </a>
+          <a class="btn light" target="_blank" href="https://www.google.com/maps/place/Lake+Bled/">
+            Lake Bled
+          </a>
+        </div>
+
+        <details>
+          <summary>Restauranttips voor Bled</summary>
+          <div class="mini">
+            <div class="mini-box">
+              <strong>Oštarija Peglez’n</strong>
+              Goede keuze als jullie in Bled wat uitgebreider willen lunchen of dineren.
+            </div>
+            <div class="mini-box">
+              <strong>Pizzeria Rustika</strong>
+              Fijne, makkelijke optie met pizza en een ongedwongen sfeer.
+            </div>
+            <div class="mini-box">
+              <strong>Aan het meer zelf</strong>
+              Voor het uitzicht is een eenvoudige lunch direct rond het meer ook al top.
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <details>
+        <summary>Extra tips: restaurants, zwemspots & handige keuzes</summary>
+        <div class="mini">
+          <div class="mini-box">
+            <strong>Kobarid – restaurants</strong>
+            Voor een bekendere avond: Hiša Polonka. Voor iets eenvoudiger: kijk ook gewoon in het centrum wat gezellig voelt.
+          </div>
+          <div class="mini-box">
+            <strong>Soča Valley – zwemmen</strong>
+            Nadiža is vaak prettiger met kind, omdat het water rustiger en meestal wat vriendelijker aanvoelt dan de wildere Soča-plekken.
+          </div>
+          <div class="mini-box">
+            <strong>Bohinj – zwemmen</strong>
+            Ribčev Laz en Ukanc zijn fijne uitvalsbases voor zwemmen, pootjebaden en even rustig zitten met uitzicht.
+          </div>
+          <div class="mini-box">
+            <strong>Bled – slim aanpakken</strong>
+            Parkeren kan druk zijn. Voor deze dag is het helemaal prima om niet te veel te plannen: rondje meer, lunch, ijsje en misschien een klein boottochtje.
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section class="card" id="dag8">
+      <h2>Terme Čatež & terugreis</h2>
+      <img class="photo" alt="Terme Catez" src="https://commons.wikimedia.org/wiki/Special:FilePath/Terme%20%C4%8Cate%C5%BE%2001.jpg?width=1280">
+
+      <div class="day">
+        <div class="day-header">
+          <div class="day-title">Dag 8 — Maandag 24 augustus</div>
+          <div class="tag">Naar Čatež</div>
+        </div>
+        <ul class="info">
+          <li><strong>09:00</strong> uitchecken Bohinj.</li>
+          <li><strong>09:30</strong> vertrek richting Čatež.</li>
+          <li><strong>11:30–12:00</strong> aankomst en inchecken.</li>
+          <li><strong>Middag</strong> eerste verkenning van het waterpark.</li>
+          <li><strong>Avond</strong> rustig eten en ontspannen.</li>
+        </ul>
+
+        <p><strong>Čatež – Camp & Mobile Homes</strong><br>
+        Topliška cesta 35a, 8250 Brežice, Slovenië</p>
+
+        <div class="buttons">
+          <a class="btn" target="_blank" href="https://www.google.com/maps/dir/Letovi%C5%A1ka+ulica+6,+4264+Bohinjska+Bistrica,+Slovenia/Topli%C5%A1ka+cesta+35a,+8250+Bre%C5%BEice,+Slovenia">
+            Route Bohinj naar Čatež
+          </a>
+        </div>
+      </div>
+
+      <div class="day" id="dag9">
+        <div class="day-header">
+          <div class="day-title">Dag 9 — Dinsdag 25 augustus</div>
+          <div class="tag">Waterparkdag</div>
+        </div>
+        <ul class="info">
+          <li>Volledige relaxdag bij de zwembaden en glijbanen.</li>
+          <li>Geen strak schema nodig.</li>
+          <li>Gewoon genieten van de laatste vakantiedagen.</li>
+        </ul>
+
+        <img class="photo" alt="Terme Catez winter" src="https://commons.wikimedia.org/wiki/Special:FilePath/Terme%20Catez%20-%20panoramio.jpg?width=1280">
+
+        <details>
+          <summary>Eten in Terme Čatež</summary>
+          <div class="mini">
+            <div class="mini-box">
+              <strong>Restaurant Terme</strong>
+              Handige vaste optie op het resort zelf.
+            </div>
+            <div class="mini-box">
+              <strong>Valovi Pool Lounge Bar</strong>
+              Fijn voor iets makkelijks rond het zwembad.
+            </div>
+            <div class="mini-box">
+              <strong>Capitan’s Bakery & Pizzeria</strong>
+              Ideaal als jullie iets simpels en kindvriendelijks willen.
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div class="day" id="dag10">
+        <div class="day-header">
+          <div class="day-title">Dag 10 — Woensdag 26 augustus</div>
+          <div class="tag">Laatste volle dag</div>
+        </div>
+        <ul class="info">
+          <li>Nog een waterdag of juist een rustigere dag.</li>
+          <li>Eventueel alvast een deel van de spullen inpakken.</li>
+          <li>Laatste avond ontspannen afsluiten.</li>
+        </ul>
+
+        <img class="photo" alt="Terme Catez summer" src="https://commons.wikimedia.org/wiki/Special:FilePath/Terme%20Catez%20glijbanen%20zwembad%20-%20panoramio.jpg?width=1280">
+      </div>
+
+      <div class="day" id="dag11">
+        <div class="day-header">
+          <div class="day-title">Dag 11 — Donderdag 27 augustus</div>
+          <div class="tag">Terugreis</div>
+        </div>
+        <ul class="info">
+          <li><strong>13:30</strong> vertrek richting Venetië luchthaven.</li>
+          <li><strong>16:30</strong> auto inleveren bij Sixt.</li>
+          <li><strong>17:50</strong> vertrek KLM vlucht <strong>KL1634</strong> naar Amsterdam.</li>
+          <li><strong>19:45</strong> landing op Schiphol.</li>
+        </ul>
+
+        <img class="photo" alt="Venetie" src="https://commons.wikimedia.org/wiki/Special:FilePath/Grand%20Canal,%20Venice,%20Italy.jpg?width=1280">
+
+        <div class="buttons">
+          <a class="btn" target="_blank" href="https://www.google.com/maps/dir/Topli%C5%A1ka+cesta+35a,+8250+Bre%C5%BEice,+Slovenia/Venice+Marco+Polo+Airport">
+            Route naar luchthaven
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      Definitieve versie – alles samengevoegd in één pagina, inclusief routes, foto’s, restauranttips en extra praktische suggesties.
+    </div>
+  </div>
+</body>
+</html>
