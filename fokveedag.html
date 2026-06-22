@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fokveedag Hellevoetsluis - interactieve plattegrond mockup</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <style>
+    html, body, #map { height: 100%; margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    .topbar {
+      position: absolute; z-index: 1000; left: 12px; right: 12px; top: 12px;
+      background: rgba(255,255,255,.95); border-radius: 18px; padding: 12px 14px;
+      box-shadow: 0 4px 18px rgba(0,0,0,.18);
+    }
+    .topbar h1 { margin: 0 0 4px; font-size: 20px; }
+    .topbar p { margin: 0; font-size: 13px; color: #444; }
+    .locate {
+      position: absolute; z-index: 1000; right: 14px; bottom: 24px;
+      border: 0; border-radius: 999px; padding: 14px 18px; font-weight: 700;
+      background: #fff; box-shadow: 0 4px 18px rgba(0,0,0,.25);
+    }
+    .legend {
+      position: absolute; z-index: 1000; left: 12px; bottom: 18px;
+      background: rgba(255,255,255,.95); border-radius: 14px; padding: 10px 12px;
+      box-shadow: 0 4px 18px rgba(0,0,0,.18); font-size: 13px;
+    }
+    .tag { display: inline-block; padding: 2px 8px; border-radius: 999px; margin: 2px; background: #eee; }
+    .area-label {
+      background: rgba(255,255,255,.9);
+      border: 1px solid #777;
+      border-radius: 999px;
+      padding: 3px 8px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <div class="topbar">
+    <h1>Fokveedag Hellevoetsluis</h1>
+    <p>Demo/mockup interactieve plattegrond — definitieve indeling kan later worden aangepast.</p>
+  </div>
+
+  <div class="legend">
+    <b>Legenda</b><br>
+    <span class="tag">📍 Ingang</span>
+    <span class="tag">🚲 Fietsenstalling</span>
+    <span class="tag">🐄 Rundvee</span>
+    <span class="tag">🍔 Food</span>
+    <span class="tag">ℹ️ Info</span>
+  </div>
+
+  <button class="locate" onclick="startLocate()">📍 Toon mijn locatie</button>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // Let op: dit zijn benaderde GPS-punten voor de demo.
+    // Na controle op locatie kunnen we deze waarden precies maken.
+    const map = L.map('map', { zoomControl: true }).setView([51.8330, 4.1306], 17);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 20,
+      attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+
+    const terrein = [
+      [51.83420, 4.12845],
+      [51.83435, 4.13290],
+      [51.83260, 4.13330],
+      [51.83170, 4.12855]
+    ];
+
+    L.polygon(terrein, {
+      color: '#1f6feb',
+      weight: 3,
+      fillColor: '#7bc043',
+      fillOpacity: 0.25
+    }).addTo(map).bindPopup('<b>Evenemententerrein</b><br>Globale demo-afbakening.');
+
+    // Ingangen volgens jouw hartjes in de screenshot.
+    const points = [
+      {name: 'Fietsenstalling', icon: '🚲', coords: [51.83172, 4.12850], text: 'Fietsenstalling bij de hoek Smitsweg / Hoonaartstraat.'},
+      {name: 'Hoofdingang bezoekers', icon: '📍', coords: [51.83218, 4.12885], text: 'Hoofdingang voor bezoekers.'},
+      {name: 'Ingang deelnemers', icon: '🚜', coords: [51.83378, 4.12900], text: 'Ingang voor deelnemers en aanvoer.'}
+    ];
+
+    function emojiIcon(emoji) {
+      return L.divIcon({
+        html: `<div style="font-size:30px; filter: drop-shadow(0 2px 3px rgba(0,0,0,.35));">${emoji}</div>`,
+        className: '',
+        iconSize: [34,34],
+        iconAnchor: [17,30]
+      });
+    }
+
+    points.forEach(p => {
+      L.marker(p.coords, {icon: emojiIcon(p.icon)})
+        .addTo(map)
+        .bindPopup(`<b>${p.icon} ${p.name}</b><br>${p.text}`);
+    });
+
+    // Demo-vakken, grof gebaseerd op de plattegrond van vorig jaar.
+    const demoAreas = [
+      {name:'Standhouders', emoji:'🛍️', color:'#7b77c9', bounds:[[51.83405,4.12880],[51.83428,4.13080]]},
+      {name:'Demonstratiering', emoji:'🐄', color:'#e88ab9', bounds:[[51.83315,4.12915],[51.83375,4.13085]]},
+      {name:'Rundveering', emoji:'🐮', color:'#e88ab9', bounds:[[51.83278,4.12915],[51.83305,4.13030]]},
+      {name:'Foodplein', emoji:'🍔', color:'#f5ed7a', bounds:[[51.83322,4.13115],[51.83378,4.13175]]},
+      {name:'Tent / Bar', emoji:'🎪', color:'#8e86cc', bounds:[[51.83392,4.13120],[51.83420,4.13210]]},
+      {name:'Kinderplein', emoji:'🎈', color:'#e47755', bounds:[[51.83350,4.13080],[51.83386,4.13115]]},
+      {name:'Koeien', emoji:'🐄', color:'#67c7e8', bounds:[[51.83260,4.13065],[51.83320,4.13115]]},
+      {name:'Trekkers & trailers', emoji:'🚜', color:'#d1d1d1', bounds:[[51.83205,4.13160],[51.83242,4.13275]]}
+    ];
+
+    demoAreas.forEach(a => {
+      const rect = L.rectangle(a.bounds, {color:'#555', weight:1, fillColor:a.color, fillOpacity:.55})
+        .addTo(map)
+        .bindPopup(`<b>${a.emoji} ${a.name}</b><br>Demo-zone. Definitieve plek later aanpasbaar.`);
+      const center = rect.getBounds().getCenter();
+      L.marker(center, {
+        icon: L.divIcon({className:'area-label', html:`${a.emoji} ${a.name}`})
+      }).addTo(map);
+    });
+
+    let userMarker, userCircle;
+    function startLocate() {
+      if (!navigator.geolocation) {
+        alert('Locatiebepaling wordt niet ondersteund door deze browser.');
+        return;
+      }
+      navigator.geolocation.watchPosition(pos => {
+        const latlng = [pos.coords.latitude, pos.coords.longitude];
+        const accuracy = pos.coords.accuracy || 20;
+
+        if (!userMarker) {
+          userMarker = L.marker(latlng, {icon: emojiIcon('🔵')}).addTo(map).bindPopup('Jouw locatie');
+          userCircle = L.circle(latlng, {radius: accuracy, color:'#136aec', fillOpacity:.12}).addTo(map);
+          map.setView(latlng, 18);
+        } else {
+          userMarker.setLatLng(latlng);
+          userCircle.setLatLng(latlng).setRadius(accuracy);
+        }
+      }, err => {
+        alert('Locatie kon niet worden opgehaald. Geef toestemming voor locatiegebruik.');
+      }, {
+        enableHighAccuracy: true,
+        maximumAge: 5000,
+        timeout: 10000
+      });
+    }
+
+    map.fitBounds(terrein, {padding:[50,50]});
+  </script>
+</body>
+</html>
